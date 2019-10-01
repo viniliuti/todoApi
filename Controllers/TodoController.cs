@@ -1,7 +1,12 @@
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using todoApi.Models;
+using todoApi.Service;
+using todoApi.Validator;
 
 namespace todoApi.Controllers
 {
@@ -64,6 +69,28 @@ namespace todoApi.Controllers
             }
 
             return item;
+        }
+
+        [HttpPost]
+        public async Task<StatusCodeResult> Post([FromBody]TodoItem body)
+        {
+            try
+            {
+                // TodoItem newItem = new TodoItem();
+                TodoService todoService = new TodoService(_context);
+
+                TodoItem todoReturn = await todoService.AddTodoItem(body);
+                if (todoReturn.Name.Contains("existe"))
+                    return Conflict();
+                else if (todoReturn.Equals(body))
+                    return Ok();
+                else
+                    return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
     }

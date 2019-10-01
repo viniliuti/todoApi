@@ -1,0 +1,5 @@
+bin/
+.store/
+.vscode/
+obj/
+
